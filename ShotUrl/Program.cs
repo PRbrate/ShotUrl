@@ -1,13 +1,37 @@
+using Microsoft.EntityFrameworkCore;
+using ShotUrl.Repository;
+using ShotUrl.Repository.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IEntityUrlRepository, EntityUrlRepository>();
+
+var connectionStr = builder.Configuration.GetConnectionString("CONNECTION");
+
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlite((connectionStr)));
+
 var app = builder.Build();
+
+
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
 
 app.MapGet("/", () => "Hello World!");
+
+app.MapGet("/shorten/{id}", async(string id, IEntityUrlRepository _entityUrl) =>
+{
+    var url = await _entityUrl.GetUrl(id);
+    return Results.Redirect(url.BaseUrl);
+});
+
+app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>
+{
+    await _entityUrl.CreatShotUrl(principalUrl);
+    
+});
 
 app.Run();

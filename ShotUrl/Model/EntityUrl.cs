@@ -1,4 +1,6 @@
-﻿namespace ShotUrl.Model
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ShotUrl.Model
 {
     public class EntityUrl
     {
