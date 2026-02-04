@@ -5,6 +5,6 @@ namespace ShotUrl.Repository.Interfaces
     public interface IEntityUrlRepository
     {
         Task<EntityUrl> GetUrl(string shortUrl);
-        Task CreatShotUrl(string principalUrl);
+        Task CreateShotUrl(string principalUrl);
     }
 }

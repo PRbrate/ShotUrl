@@ -19,8 +19,9 @@ namespace ShotUrl.Repository
             return principalUrl;
         }
 
-        public async Task CreatShotUrl(string principalUrl)
+        public async Task CreateShotUrl(string principalUrl)
         {
+
             var url = new EntityUrl() { BaseUrl = principalUrl };
             _context.EntityUrls.Add(url);
             await _context.SaveChangesAsync();

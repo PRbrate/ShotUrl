@@ -22,16 +22,16 @@ app.UseSwaggerUI();
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapGet("/shorten/{id}", async(string id, IEntityUrlRepository _entityUrl) =>
+app.MapGet("/{id}", async(string id, IEntityUrlRepository _entityUrl) =>
 {
     var url = await _entityUrl.GetUrl(id);
     return Results.Redirect(url.BaseUrl);
 });
 
-app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>
-{
-    await _entityUrl.CreatShotUrl(principalUrl);
+//app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>
+//{
+//    await _entityUrl.CreatShotUrl(principalUrl);
     
-});
+//});
 
 app.Run();
