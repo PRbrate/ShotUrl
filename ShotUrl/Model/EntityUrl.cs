@@ -7,6 +7,6 @@ namespace ShotUrl.Model
         
         public string ShortId { get; set; }
         public string OriginalUrl { get; set; }
-        public DateTime Created_at { get; set; }
+        public DateTime Created_at { get; set; } = DateTime.UtcNow;
     }
 }

@@ -26,7 +26,7 @@ app.MapGet("/", () => "Hello World!");
 app.MapGet("/{id}", async(string id, IEntityUrlRepository _entityUrl) =>
 {
     var url = await _entityUrl.GetUrl(id);
-    return Results.Redirect("");
+    return Results.Redirect(url.OriginalUrl);
 });
 
 app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>

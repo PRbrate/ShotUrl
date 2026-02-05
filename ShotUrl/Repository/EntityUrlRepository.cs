@@ -15,7 +15,7 @@ namespace ShotUrl.Repository
         
         public async Task<long> GetNextIdAsync()
         {
-            return await _context.Database.SqlQueryRaw<long>("Select nextval('short_url_seq')").SingleAsync();
+            return await _context.Database.SqlQueryRaw<long>("SELECT NEXTVAL('public.\"URL_NEXT_VAL\"') as \"Value\"").SingleAsync();
         }
 
         public async Task<EntityUrl> GetUrl(string shortUrl)
@@ -24,10 +24,23 @@ namespace ShotUrl.Repository
             return principalUrl;
         }
 
-        public async Task<EntityUrl> CreateShotUrl(string principalUrl)
+        public async Task<string> CreateShotUrl(string principalUrl)
         {
-            var teste = GetNextIdAsync();
-            return null;
+            var id = await GetNextIdAsync();
+
+            var ofusc = CodeGenerate.ofusc(id);
+            var shortId = CodeGenerate.Encode(ofusc);
+
+            var entity = new EntityUrl
+            {
+                ShortId = shortId,
+                OriginalUrl = principalUrl
+            };
+
+            _context.EntityUrls.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return shortId;
 
         }
 

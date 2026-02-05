@@ -6,9 +6,10 @@ namespace ShotUrl.Model
     {
         private const long Secret = 0x5A17C9F3B2D4E6A1;
         private const string Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-        public static long ofusc(long id) => id ^ Secret;
-        public static long Desofusc(long value) => value ^ Secret;
+        private const long Mask42Bits = (1l << 42) - 1;
+ 
+        public static long ofusc(long id) => (id ^ Secret)  & Mask42Bits;
+        public static long Desofusc(long value) => (value ^ Secret) & Mask42Bits;
 
         public static string Encode(long value)
         {
