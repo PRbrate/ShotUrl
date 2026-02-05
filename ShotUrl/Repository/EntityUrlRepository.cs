@@ -18,10 +18,15 @@ namespace ShotUrl.Repository
             return await _context.Database.SqlQueryRaw<long>("SELECT NEXTVAL('public.\"URL_NEXT_VAL\"') as \"Value\"").SingleAsync();
         }
 
-        public async Task<EntityUrl> GetUrl(string shortUrl)
+
+        public async Task<string> GetUrl(string shortUrl)
         {
             var principalUrl = await _context.EntityUrls.FindAsync(shortUrl);
-            return principalUrl;
+            if (principalUrl != null) 
+            {
+                return principalUrl.OriginalUrl;
+            }
+            return "";
         }
 
         public async Task<string> CreateShotUrl(string principalUrl)

@@ -6,6 +6,7 @@ using ShotUrl.Repository.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IEntityUrlRepository, EntityUrlRepository>();
 
@@ -20,19 +21,18 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
-app.MapGet("/", () => "Hello World!");
-
 app.MapGet("/{id}", async(string id, IEntityUrlRepository _entityUrl) =>
 {
-    var url = await _entityUrl.GetUrl(id);
-    return Results.Redirect(url.OriginalUrl);
+    
+    var uri = await _entityUrl.GetUrl(id);
+    return Results.Redirect(uri);
 });
 
-app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>
+app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl, IHttpContextAccessor _acessor) =>
 {
-
-    await _entityUrl.CreateShotUrl(principalUrl);
+    var request = _acessor.HttpContext.Request;
+    var shortId = await _entityUrl.CreateShotUrl(principalUrl);
+    return Results.Ok($"{request.Scheme}://{request.Host}{request.PathBase}/{shortId}");
     
 });
 
