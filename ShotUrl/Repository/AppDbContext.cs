@@ -16,7 +16,7 @@ namespace ShotUrl.Repository
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<EntityUrl>().HasKey(u => u.Id);
+            modelBuilder.Entity<EntityUrl>().HasKey(u => u.ShortId);
             modelBuilder.Entity<EntityUrl>().HasIndex(u => u.ShortId).IsUnique();
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

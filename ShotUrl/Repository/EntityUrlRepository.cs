@@ -12,6 +12,11 @@ namespace ShotUrl.Repository
         {
             _context = appDbContext;
         }
+        
+        public async Task<long> GetNextIdAsync()
+        {
+            return await _context.Database.SqlQueryRaw<long>("Select nextval('short_url_seq')").SingleAsync();
+        }
 
         public async Task<EntityUrl> GetUrl(string shortUrl)
         {
@@ -19,12 +24,10 @@ namespace ShotUrl.Repository
             return principalUrl;
         }
 
-        public async Task CreateShotUrl(string principalUrl)
+        public async Task<EntityUrl> CreateShotUrl(string principalUrl)
         {
-
-            var url = new EntityUrl() { BaseUrl = principalUrl };
-            _context.EntityUrls.Add(url);
-            await _context.SaveChangesAsync();
+            var teste = GetNextIdAsync();
+            return null;
 
         }
 

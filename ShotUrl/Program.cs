@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShotUrl.Model;
 using ShotUrl.Repository;
 using ShotUrl.Repository.Interfaces;
 
@@ -10,7 +11,7 @@ builder.Services.AddScoped<IEntityUrlRepository, EntityUrlRepository>();
 
 var connectionStr = builder.Configuration.GetConnectionString("CONNECTION");
 
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlite((connectionStr)));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql((connectionStr)));
 
 var app = builder.Build();
 
@@ -25,13 +26,14 @@ app.MapGet("/", () => "Hello World!");
 app.MapGet("/{id}", async(string id, IEntityUrlRepository _entityUrl) =>
 {
     var url = await _entityUrl.GetUrl(id);
-    return Results.Redirect(url.BaseUrl);
+    return Results.Redirect("");
 });
 
-//app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>
-//{
-//    await _entityUrl.CreatShotUrl(principalUrl);
+app.MapPost("/createUrl", async (string principalUrl, IEntityUrlRepository _entityUrl) =>
+{
+
+    await _entityUrl.CreateShotUrl(principalUrl);
     
-//});
+});
 
 app.Run();
