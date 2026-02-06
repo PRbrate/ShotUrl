@@ -21,12 +21,8 @@ namespace ShotUrl.Repository
 
         public async Task<string> GetUrl(string shortUrl)
         {
-            var principalUrl = await _context.EntityUrls.FindAsync(shortUrl);
-            if (principalUrl != null) 
-            {
-                return principalUrl.OriginalUrl;
-            }
-            return "";
+            return await _context.EntityUrls.Where(u => u.ShortId == shortUrl).Select(x => x.OriginalUrl).FirstOrDefaultAsync();
+            
         }
 
         public async Task<bool> CreateShotUrl(EntityUrl entity)
