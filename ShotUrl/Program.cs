@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using ShotUrl.Model;
 using ShotUrl.Repository;
 using ShotUrl.Repository.Interfaces;
 using ShotUrl.Services;
 using ShotUrl.Services.Interfaces;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -12,11 +14,14 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IEntityUrlRepository, EntityUrlRepository>();
 builder.Services.AddScoped<IEntityUrlService, EntityUrlService>();
+builder.Services.AddScoped<IEntityUrlCache, EntityUrlCache>();
+
 
 var connectionStr = builder.Configuration.GetConnectionString("CONNECTION");
+var connectionRedis = builder.Configuration.GetConnectionString("CONNECTION_REDIS");
 
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql((connectionStr)));
-
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(connectionRedis));
 var app = builder.Build();
 
 

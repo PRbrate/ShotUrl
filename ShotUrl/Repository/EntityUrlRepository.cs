@@ -19,9 +19,9 @@ namespace ShotUrl.Repository
         }
 
 
-        public async Task<string> GetUrl(string shortUrl)
+        public async Task<EntityUrl> GetUrl(string shortUrl)
         {
-            return await _context.EntityUrls.Where(u => u.ShortId == shortUrl).Select(x => x.OriginalUrl).FirstOrDefaultAsync();
+            return await _context.EntityUrls.FindAsync(shortUrl);
             
         }
 

@@ -8,10 +8,12 @@ namespace ShotUrl.Services
     public class EntityUrlService : IEntityUrlService
     {
         private readonly IEntityUrlRepository _repository;
+        private readonly IEntityUrlCache _cache;
 
-        public EntityUrlService(IEntityUrlRepository repository)
+        public EntityUrlService(IEntityUrlRepository repository, IEntityUrlCache cache)
         {
             _repository = repository;
+            _cache = cache;
         }
 
         public async Task<string> CreateUrl(string principalUrl)
@@ -45,9 +47,18 @@ namespace ShotUrl.Services
 
         }
 
-        public async Task<string> GetUrl(string shorUrl)
+        public async Task<string> GetUrl(string shortUrl)
         {
-            return await _repository.GetUrl(shorUrl);
+            var cache = await _cache.GetAsync(shortUrl);
+            if(cache != null)
+            {
+                return cache;
+            }
+            var url =  await _repository.GetUrl(shortUrl);
+
+            await _cache.SetAsync(shortUrl, url.OriginalUrl, TimeSpan.FromDays(60));
+            return url.OriginalUrl;
+
         }
     }
 }
