@@ -29,23 +29,10 @@ namespace ShotUrl.Repository
             return "";
         }
 
-        public async Task<string> CreateShotUrl(string principalUrl)
+        public async Task<bool> CreateShotUrl(EntityUrl entity)
         {
-            var id = await GetNextIdAsync();
-
-            var ofusc = CodeGenerate.ofusc(id);
-            var shortId = CodeGenerate.Encode(ofusc);
-
-            var entity = new EntityUrl
-            {
-                ShortId = shortId,
-                OriginalUrl = principalUrl
-            };
-
             _context.EntityUrls.Add(entity);
-            await _context.SaveChangesAsync();
-
-            return shortId;
+            return await _context.SaveChangesAsync() > 0;
 
         }
 
