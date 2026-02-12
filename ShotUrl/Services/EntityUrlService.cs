@@ -56,7 +56,7 @@ namespace ShotUrl.Services
             }
             var url =  await _repository.GetUrl(shortUrl);
 
-            await _cache.SetAsync(shortUrl, url.OriginalUrl, TimeSpan.FromDays(60));
+            await _cache.SetAsync(shortUrl, url.OriginalUrl, TimeSpan.FromDays(30));
             return url.OriginalUrl;
 
         }

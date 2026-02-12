@@ -1,4 +1,5 @@
-﻿using ShotUrl.Services.Interfaces;
+﻿using Newtonsoft.Json.Linq;
+using ShotUrl.Services.Interfaces;
 using StackExchange.Redis;
 
 namespace ShotUrl.Services
@@ -14,7 +15,17 @@ namespace ShotUrl.Services
 
         public async Task<string> GetAsync(string shortUrl)
         {
-            return await _database.StringGetAsync($"ShortId:{shortUrl}");
+            var url =  await _database.StringGetAsync($"ShortId:{shortUrl}");
+
+            if (!string.IsNullOrEmpty(url))
+            {
+                var quant = await _database.StringIncrementAsync($"ShortId:{shortUrl}:count");
+                if(quant > 1000)
+                {
+                    await _database.KeyExpireAsync($"ShortId:{shortUrl}", TimeSpan.FromDays(60));
+                }
+            }
+            return url;
         }
 
         public async Task SetAsync(string shortUrl, string url, TimeSpan timeSpan)
@@ -25,5 +36,7 @@ namespace ShotUrl.Services
                 timeSpan
                 );
         }
+
+
     }
 }
