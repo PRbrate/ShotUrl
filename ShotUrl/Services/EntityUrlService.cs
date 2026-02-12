@@ -23,7 +23,7 @@ namespace ShotUrl.Services
             var ofusc = CodeGenerate.ofusc(id);
             var shortId = CodeGenerate.Encode(ofusc);
 
-            string pattern = @"^https://.*$";
+            string pattern = @"^https?://.*$";
 
             if (!Regex.IsMatch(principalUrl, pattern))
             {
