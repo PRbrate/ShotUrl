@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using ShotUrl.Model;
 using ShotUrl.Repository;
 using ShotUrl.Repository.Interfaces;
@@ -28,11 +29,23 @@ builder.Services.AddScoped<IEntityUrlCache, EntityUrlCache>();
 
 
 var connectionStr = builder.Configuration.GetConnectionString("CONNECTION");
-var connectionRedis = builder.Configuration.GetConnectionString("CONNECTION_REDIS");
-var redisOptions = ConfigurationOptions.Parse(connectionRedis);
-redisOptions.AbortOnConnectFail = false;
+var redisConfig = builder.Configuration.GetSection("Redis");
+
+
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql((connectionStr)));
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOptions));
+builder.Services.AddSingleton<IConnectionMultiplexer>(ct =>
+{
+    var options = new ConfigurationOptions
+    {
+        EndPoints = { $"{redisConfig["Host"]}:{redisConfig["Port"]}" },
+        User = redisConfig["User"],
+        Password = redisConfig["Password"],
+        Ssl = true,
+        AbortOnConnectFail = false
+    };
+    return ConnectionMultiplexer.Connect(options);
+});
+
 var app = builder.Build();
 
 
