@@ -12,7 +12,7 @@ using ShotUrl.Repository;
 namespace ShotUrl.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260205124951_initial")]
+    [Migration("20260210014342_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -34,7 +34,6 @@ namespace ShotUrl.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OriginalUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("ShortId");

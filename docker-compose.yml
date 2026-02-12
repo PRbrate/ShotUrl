@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  api: 
+    image: shorturl:latest
+    container_name: apicontainer
+    ports:
+        - "32788:8080"
+        - "32789:8081"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Docker
+        - ConnectionStrings__CONNECTION=Host=postgres;Port=5432;Database=ShortUrl;Username=postgres;Password=URL
+        - ConnectionStrings__CONNECTION_REDIS=redis:6379,abortConnect=false
+    depends_on:
+        - postgres
+        - redis 
+    networks:
+        - app-network
+  postgres:
+    image: postgres:latest
+    container_name: postgrecontainer
+    environment:
+        POSTGRES_DB: ShortUrl
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: URL
+    ports:
+        - "5432:5432"
+    networks:
+        - app-network
+  redis:
+    image: redis:latest
+    container_name: redisurl
+    ports:
+      - "6379:6379"
+    networks:
+        - app-network
+networks:
+    app-network:
+        driver: bridge

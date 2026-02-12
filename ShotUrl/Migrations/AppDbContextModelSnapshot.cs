@@ -31,7 +31,6 @@ namespace ShotUrl.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OriginalUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("ShortId");

@@ -16,7 +16,7 @@ namespace ShotUrl.Migrations
                 columns: table => new
                 {
                     ShortId = table.Column<string>(type: "text", nullable: false),
-                    OriginalUrl = table.Column<string>(type: "text", nullable: false),
+                    OriginalUrl = table.Column<string>(type: "text", nullable: true),
                     Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

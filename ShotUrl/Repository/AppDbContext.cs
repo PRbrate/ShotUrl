@@ -18,7 +18,6 @@ namespace ShotUrl.Repository
 
             modelBuilder.Entity<EntityUrl>().HasKey(u => u.ShortId);
             modelBuilder.Entity<EntityUrl>().HasIndex(u => u.ShortId).IsUnique();
-
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }

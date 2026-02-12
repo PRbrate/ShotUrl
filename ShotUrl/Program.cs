@@ -12,6 +12,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("Allow", policy =>
+    {
+        policy.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<IEntityUrlRepository, EntityUrlRepository>();
 builder.Services.AddScoped<IEntityUrlService, EntityUrlService>();
 builder.Services.AddScoped<IEntityUrlCache, EntityUrlCache>();
@@ -19,13 +29,15 @@ builder.Services.AddScoped<IEntityUrlCache, EntityUrlCache>();
 
 var connectionStr = builder.Configuration.GetConnectionString("CONNECTION");
 var connectionRedis = builder.Configuration.GetConnectionString("CONNECTION_REDIS");
-
+var redisOptions = ConfigurationOptions.Parse(connectionRedis);
+redisOptions.AbortOnConnectFail = false;
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql((connectionStr)));
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(connectionRedis));
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisOptions));
 var app = builder.Build();
 
 
 
+app.UseCors("Allow");
 app.UseSwagger();
 app.UseSwaggerUI();
 
