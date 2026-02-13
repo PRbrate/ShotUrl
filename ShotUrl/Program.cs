@@ -17,7 +17,7 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("Allow", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://encurta-url-snva.vercel.app")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
@@ -63,6 +63,10 @@ app.MapGet("/{id}", async(string id, IEntityUrlService _entityUrl) =>
 
 app.MapPost("/createUrl", async (string principalUrl, IEntityUrlService _entityUrl, IHttpContextAccessor _acessor) =>
 {
+    if (string.IsNullOrEmpty(principalUrl))
+    {
+        return Results.BadRequest();
+    }
     var request = _acessor.HttpContext.Request;
     var shortId = await _entityUrl.CreateUrl(principalUrl);
     return Results.Ok($"{request.Scheme}://{request.Host}{request.PathBase}/{shortId}");

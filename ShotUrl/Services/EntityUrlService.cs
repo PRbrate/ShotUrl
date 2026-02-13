@@ -30,6 +30,7 @@ namespace ShotUrl.Services
                 principalUrl = "https://" + principalUrl;
             }
 
+
             var entity = new EntityUrl
             {
                 ShortId = shortId,
